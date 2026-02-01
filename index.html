@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Will You Be My Valentine? 💘</title>
+  <title>KITHU, Will You Be My Valentine? 💘</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       height: 100vh;
@@ -19,11 +24,13 @@
     .card {
       background: white;
       padding: 40px 30px;
-      border-radius: 20px;
+      border-radius: 24px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      max-width: 320px;
+      max-width: 340px;
       animation: popIn 0.8s ease;
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
@@ -34,10 +41,11 @@
     p {
       margin-bottom: 30px;
       color: #555;
+      font-size: 1.1rem;
     }
 
     button {
-      padding: 12px 24px;
+      padding: 12px 26px;
       font-size: 16px;
       border: none;
       border-radius: 30px;
@@ -46,13 +54,13 @@
     }
 
     button:hover {
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
 
     .yes {
       background-color: #ff4d6d;
       color: white;
-      margin-right: 10px;
+      margin-right: 12px;
     }
 
     .no {
@@ -61,18 +69,19 @@
       position: absolute;
     }
 
-    .hearts span {
-      position: absolute;
-      bottom: -20px;
-      font-size: 20px;
-      animation: floatUp 6s infinite ease-in;
-      opacity: 0.7;
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      top: -10px;
+      animation: fall 3s linear infinite;
+      z-index: 1;
     }
 
-    @keyframes floatUp {
-      0% { transform: translateY(0); opacity: 0; }
-      10% { opacity: 1; }
-      100% { transform: translateY(-120vh); opacity: 0; }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
     @keyframes popIn {
@@ -81,40 +90,63 @@
     }
   </style>
 </head>
+
 <body>
-  <div class="card">
+  <div class="card" id="card">
     <h1>Hey ❤️</h1>
     <p>Will you be my Valentine?</p>
     <button class="yes" onclick="sayYes()">Yes 💖</button>
     <button class="no" id="noBtn">No 🙃</button>
   </div>
 
-  <div class="hearts"></div>
-
   <script>
     const noBtn = document.getElementById('noBtn');
 
     noBtn.addEventListener('mouseover', () => {
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 50);
+      const x = Math.random() * (window.innerWidth - 120);
+      const y = Math.random() * (window.innerHeight - 60);
       noBtn.style.left = x + 'px';
       noBtn.style.top = y + 'px';
     });
 
     function sayYes() {
-      document.body.innerHTML = '<h1 style="color:white;font-size:3rem;text-align:center;">YAY!!! 💕🥰<br>Best decision ever.</h1>';
-      createHearts();
+      document.body.innerHTML = `
+        <div style="height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#ff9a9e,#fad0c4);text-align:center;overflow:hidden;">
+          <h1 style="color:white;font-size:3rem;margin-bottom:10px;animation:popIn 0.8s ease;">YAY!!! 💕🥰</h1>
+          <p style="color:white;font-size:1.5rem;margin-bottom:30px;">Best decision ever.</p>
+          <img 
+            src="https://media.tenor.com/6v7lYyY7j7cAAAAC/bear-kiss.gif"
+            alt="Bear Kiss GIF"
+            style="
+              max-width:320px;
+              border-radius:24px;
+              box-shadow:0 20px 40px rgba(0,0,0,0.3);
+              animation: popIn 0.8s ease;
+            "
+          />
+        </div>
+      `;
+
+      startConfetti();
     }
 
-    function createHearts() {
-      const heartsContainer = document.querySelector('.hearts') || document.body;
-      for (let i = 0; i < 30; i++) {
-        const heart = document.createElement('span');
-        heart.innerHTML = '💖';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDelay = Math.random() * 5 + 's';
-        heartsContainer.appendChild(heart);
+    function startConfetti() {
+      for (let i = 0; i < 120; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = randomColor();
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        confetti.style.width = confetti.style.height = Math.random() * 8 + 6 + 'px';
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 4000);
       }
+    }
+
+    function randomColor() {
+      const colors = ['#ff4d6d', '#ffd166', '#06d6a0', '#4dabf7', '#c77dff'];
+      return colors[Math.floor(Math.random() * colors.length)];
     }
   </script>
 </body>
